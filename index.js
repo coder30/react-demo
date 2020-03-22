@@ -1,61 +1,32 @@
-function createElement( tag, attrs, ...children ) {
-    return {
-        tag,
-        attrs,
-        children
-    }
-}
-const React = {createElement}
-const element = (
-    <div style="color:blue; font-size:48;">
-        <h1>hello</h1>
-    </div>
-)
+import ReactDom from './react-dom';
+import React from './react';
 
-function render(vnode ,container) {
-    if(typeof vnode === 'string') {
-        const textnode = document.createTextNode(vnode)
-        return container.appendChild(textnode)
-    }
-    const dom = document.createElement(vnode.tag)
-    if(vnode.attrs) {
-        for(let key in vnode.attrs) {
-            setAttribute(dom, key, vnode.attrs[key])
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            count: 0
         }
     }
-
-    vnode.children.forEach(element => {
-        render(element, dom)
-    });
-
-    return container.appendChild(dom)
-}
-
-function setAttribute(dom, name, value) {
-    if(name === 'className') name = 'class'
-
-    if(/on\w+/.test(name)) {
-        name = name.toLowerCase()
-        dom[name] = value
-    } else if(name === 'style') {
-        if(value && typeof value === 'string') {
-            dom.style.cssText = value
-        } else if(value && typeof value === 'object') {
-            for(let name in value) {
-                dom.style[name] = typeof value[name] === 'numer' ? value[name] + 'px' : value[name]
-            }
-        }
-    } else {
-        if(value) dom.setAttribute(name, vlaue)
-        else dom.removeAttribute(name, vlaue)
+    clickButton() {
+        this.setState({
+            count: this.state.count+1
+        })
+    }
+    render() {
+        return (
+            <div style="font-size:100;">
+                <span>{this.state.count}</span>
+                <p onClick={()=>{this.clickButton()}}>+</p>
+            </div>
+        )
     }
 }
 
-const ReactDom = {
-    render: (vnode, container)=>{
-        container.innerHTML = ''
-        return render(vnode, container)
-    }
+function Child() {
+    return (<div>123</div>)
 }
+
+const element = <Child/>
 
 ReactDom.render(element, document.getElementById('root'))
